@@ -9,5 +9,7 @@ CONF_APP_ID = "appId"
 CONF_PACKAGE_NAME = "packageName"
 CONF_PROJECT_ID = "projectId"
 
+CONF_PAIRINGS = "pairings"
+
 DEVICE_MANUFACTURER = "Fermax"
 HASS_BLUECON_VERSION = "0.6.1"

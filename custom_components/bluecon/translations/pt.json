@@ -31,7 +31,10 @@
       }
     },
     "error": {
-      "invalid_auth": "Autenticação inválida"
+      "invalid_auth": "Autenticação inválida",
+      "cannot_connect": "Falha ao conectar",
+      "unexpected_response": "Resposta inesperada da API da Fermax",
+      "unknown": "Erro inesperado"
     },
     "abort": {
       "already_configured": "A conta já está registada",

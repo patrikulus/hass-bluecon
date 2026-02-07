@@ -6,22 +6,21 @@ from homeassistant.const import CONF_API_KEY
 from homeassistant.config_entries import ConfigEntry
 
 
-from bluecon import BlueConAPI
+from .fermax_api import FermaxClient
 
 from .const import DEVICE_MANUFACTURER, DOMAIN, HASS_BLUECON_VERSION, SIGNAL_CALL_ENDED, CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
 
 async def async_setup_entry(hass, entry: ConfigEntry, async_add_entities):
+    cameras = []
     if entry.data.get(CONF_SENDER_ID, None) is not None and entry.data.get(CONF_API_KEY, None) is not None and entry.data.get(CONF_PROJECT_ID, None) is not None and entry.data.get(CONF_APP_ID, None) is not None and entry.data.get(CONF_PACKAGE_NAME, None) is not None:
-        bluecon : BlueConAPI = hass.data[DOMAIN][entry.entry_id]
+        bluecon: FermaxClient = hass.data[DOMAIN][entry.entry_id]
 
-        pairings = await bluecon.getPairings()
-
-        cameras = []
+        pairings = await bluecon.async_get_devices()
 
         for pairing in pairings:
-            deviceInfo = await bluecon.getDeviceInfo(pairing.deviceId)
+            deviceInfo = await bluecon.async_get_device_info(pairing.deviceId)
             if deviceInfo.photoCaller:
-                image = await bluecon.getLastPicture(pairing.deviceId)
+                image = await bluecon.async_get_last_picture(pairing.deviceId)
                 cameras.append(
                     BlueConStillCamera(
                         bluecon,
@@ -36,7 +35,7 @@ async def async_setup_entry(hass, entry: ConfigEntry, async_add_entities):
 class BlueConStillCamera(Camera):
     _attr_should_poll = False
 
-    def __init__(self, bluecon: BlueConAPI, deviceId, image: bytes | None, deviceInfo):
+    def __init__(self, bluecon: FermaxClient, deviceId, image: bytes | None, deviceInfo):
         super().__init__()
         self.bluecon = bluecon
         self.deviceId = deviceId
@@ -52,7 +51,7 @@ class BlueConStillCamera(Camera):
 
     @callback
     async def _call_ended_callback(self) -> None:
-        self.__image = await self.bluecon.getLastPicture(self.deviceId)
+        self.__image = await self.bluecon.async_get_last_picture(self.deviceId)
         self.async_schedule_update_ha_state(True)
     
     @property

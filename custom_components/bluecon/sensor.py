@@ -1,6 +1,6 @@
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.helpers.entity import DeviceInfo
-from bluecon import BlueConAPI
+from .fermax_api import FermaxClient
 
 from .const import DEVICE_MANUFACTURER, DOMAIN, HASS_BLUECON_VERSION
 
@@ -12,14 +12,14 @@ SIGNAL_EXCELENT = "excelent"
 SIGNAL_UNKNOWN = "unknown"
 
 async def async_setup_entry(hass, config, async_add_entities):
-    bluecon: BlueConAPI = hass.data[DOMAIN][config.entry_id]
+    bluecon: FermaxClient = hass.data[DOMAIN][config.entry_id]
 
-    pairings = await bluecon.getPairings()
+    pairings = await bluecon.async_get_devices()
 
     sensors = []
 
     for pairing in pairings:
-        deviceInfo = await bluecon.getDeviceInfo(pairing.deviceId)
+        deviceInfo = await bluecon.async_get_device_info(pairing.deviceId)
 
         sensors.append(
             BlueConWifiStrenghtSensor(
@@ -35,7 +35,7 @@ class BlueConWifiStrenghtSensor(SensorEntity):
     _attr_should_poll = True
 
     def __init__(self, bluecon, deviceId, deviceInfo):
-        self.__bluecon : BlueConAPI = bluecon
+        self.__bluecon: FermaxClient = bluecon
         self.deviceId = deviceId
         self._attr_unique_id = f'{self.deviceId}_connection_status'.lower()
         self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
@@ -65,7 +65,7 @@ class BlueConWifiStrenghtSensor(SensorEntity):
         )
 
     async def async_update(self):
-        deviceInfo = await self.__bluecon.getDeviceInfo(self.deviceId)
+        deviceInfo = await self.__bluecon.async_get_device_info(self.deviceId)
         self._attr_native_value = getWirelessSignalText(deviceInfo.wirelessSignal)
 
 def getWirelessSignalText(wirelessSignal):
@@ -80,4 +80,4 @@ def getWirelessSignalText(wirelessSignal):
     elif wirelessSignal == 4:
         return SIGNAL_EXCELENT
     else:
-        SIGNAL_UNKNOWN
+        return SIGNAL_UNKNOWN

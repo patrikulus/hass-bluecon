@@ -11,18 +11,18 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
-from bluecon import BlueConAPI
+from .fermax_api import FermaxClient
 
 async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry, async_add_entities):
-    bluecon = hass.data[DOMAIN][config.entry_id]
+    bluecon: FermaxClient = hass.data[DOMAIN][config.entry_id]
     lockTimeout = config.options.get(CONF_LOCK_STATE_RESET, 5)
 
-    pairings = await bluecon.getPairings()
+    pairings = await bluecon.async_get_devices()
 
     locks = []
 
     for pairing in pairings:
-        deviceInfo = await bluecon.getDeviceInfo(pairing.deviceId)
+        deviceInfo = await bluecon.async_get_device_info(pairing.deviceId)
         for accessDoorName, accessDoor in pairing.accessDoorMap.items():
             locks.append(
                 BlueConLock(
@@ -40,7 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry, async_add_
 class BlueConLock(LockEntity):
     _attr_should_poll = False
 
-    def __init__(self, bluecon: BlueConAPI, deviceId, accessDoorName, accessDoor, deviceInfo, lockTimeout):
+    def __init__(self, bluecon: FermaxClient, deviceId, accessDoorName, accessDoor, deviceInfo, lockTimeout):
         self.bluecon = bluecon
         self.lockId = f'{deviceId}_{accessDoorName}'
         self.deviceId = deviceId
@@ -79,7 +79,7 @@ class BlueConLock(LockEntity):
         """Unlock the device."""
         self._state = STATE_UNLOCKING
         self.async_schedule_update_ha_state(True)
-        await self.bluecon.openDoor(self.deviceId, self.accessDoor)
+        await self.bluecon.async_open_door(self.deviceId, self.accessDoor)
         self._state = STATE_UNLOCKED
         self.async_schedule_update_ha_state(True)
         await asyncio.sleep(self.__lockTimeout)

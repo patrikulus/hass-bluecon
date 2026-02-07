@@ -31,7 +31,10 @@
       }
     },
     "error": {
-      "invalid_auth": "Nieprawidłowe uwierzytelnianie"
+      "invalid_auth": "Nieprawidłowe uwierzytelnianie",
+      "cannot_connect": "Nie można się połączyć",
+      "unexpected_response": "Nieoczekiwana odpowiedź z API Fermax",
+      "unknown": "Nieoczekiwany błąd"
     },
     "abort": {
       "already_configured": "Konto jest już skonfigurowane",
