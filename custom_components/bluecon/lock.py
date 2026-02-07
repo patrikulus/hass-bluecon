@@ -1,12 +1,7 @@
 import asyncio
 from typing import Any, Dict
 from homeassistant.components.lock import LockEntity
-from homeassistant.const import (
-    STATE_LOCKED,
-    STATE_LOCKING,
-    STATE_UNLOCKED,
-    STATE_UNLOCKING,
-)
+
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
@@ -51,6 +46,12 @@ async def async_setup_entry(hass: HomeAssistant, config: ConfigEntry, async_add_
 
 class BlueConLock(LockEntity):
     _attr_should_poll = False
+    
+    # Define states locally if not available in const
+    STATE_LOCKED = "locked"
+    STATE_UNLOCKED = "unlocked"
+    STATE_LOCKING = "locking"
+    STATE_UNLOCKING = "unlocking"
 
     def __init__(self, client: FermaxClient, device_id: str, access_door_name: str, access_door_data: Dict[str, Any], device_info: Dict[str, Any], lock_timeout: int):
         self.client = client
@@ -60,7 +61,7 @@ class BlueConLock(LockEntity):
         self.access_door_data = access_door_data # Contains accessId dict
         self._attr_unique_id = f'{self.lock_id}_door_lock'.lower()
         self.entity_id = f'{DOMAIN}.{self._attr_unique_id}'.lower()
-        self._state = STATE_LOCKED
+        self._state = self.STATE_LOCKED
         
         model = f"{device_info.get('type', '')} {device_info.get('subtype', '')} {device_info.get('family', '')}".strip()
         self._model = model if model else "Fermax Blue Device"
@@ -70,12 +71,12 @@ class BlueConLock(LockEntity):
     @property
     def is_locking(self) -> bool:
         """Return true if lock is locking."""
-        return self._state == STATE_LOCKING
+        return self._state == self.STATE_LOCKING
 
     @property
     def is_unlocking(self) -> bool:
         """Return true if lock is unlocking."""
-        return self._state == STATE_UNLOCKING
+        return self._state == self.STATE_UNLOCKING
 
     @property
     def is_jammed(self) -> bool:
@@ -85,24 +86,24 @@ class BlueConLock(LockEntity):
     @property
     def is_locked(self) -> bool:
         """Return true if lock is locked."""
-        return self._state == STATE_LOCKED
+        return self._state == self.STATE_LOCKED
 
     async def async_lock(self, **kwargs) -> None:
         pass
 
     async def async_unlock(self, **kwargs) -> None:
         """Unlock the device."""
-        self._state = STATE_UNLOCKING
+        self._state = self.STATE_UNLOCKING
         self.async_write_ha_state()
         
         access_id = self.access_door_data["accessId"]
         await self.client.async_open_door(self.device_id, access_id)
         
-        self._state = STATE_UNLOCKED
+        self._state = self.STATE_UNLOCKED
         self.async_write_ha_state()
         
         await asyncio.sleep(self._lock_timeout)
-        self._state = STATE_LOCKED
+        self._state = self.STATE_LOCKED
         self.async_write_ha_state()
 
     async def async_open(self, **kwargs) -> None:
