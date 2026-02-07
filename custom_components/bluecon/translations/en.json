@@ -5,37 +5,25 @@
         "title": "Sign-in with Fermax Blue account",
         "data": {
           "username": "Username",
-          "password": "Password",
-          "client_id": "Fermax API Client ID",
-          "client_secret": "Fermax API Client Secret",
-          "api_key": "Google API Key",
-          "senderId": "FCM Sender ID",
-          "appId": "FCM App ID",
-          "projectId": " FCM Project ID",
-          "packageName": "FCM Package Name"
+          "password": "Password"
         }
       },
       "reconfigure": {
         "title": "Sign-in with Fermax Blue account",
         "data": {
           "username": "Username",
-          "password": "Password",
-          "client_id": "Fermax API Client ID",
-          "client_secret": "Fermax API Client Secret",
-          "api_key": "Google API Key",
-          "senderId": "FCM Sender ID",
-          "appId": "FCM App ID",
-          "projectId": " FCM Project ID",
-          "packageName": "FCM Package Name"
+          "password": "Password"
         }
       }
     },
     "error": {
-      "invalid_auth": "Invalid authentication"
+      "invalid_auth": "Invalid authentication",
+      "unknown": "Unexpected error"
     },
     "abort": {
       "already_configured": "Account is already configured",
-      "reconfigure_successful": "Integration reconfigured"
+      "reconfigure_successful": "Integration reconfigured",
+      "entry_not_found": "Entry not found"
     }
   },
   "options": {
@@ -51,19 +39,5 @@
     "error": {
       "negative_value": "The value must be a positive number"
     }
-  },
-  "entity": {
-      "sensor": {
-          "wifi-state": {
-              "state": {
-                  "terrible": "Terrible",
-                  "bad": "Bad",
-                  "weak": "Weak",
-                  "good": "Good",
-                  "excelent": "Excelent",
-                  "unknown": "Unknown"
-              }
-          }
-      }
   }
 }
