@@ -5,36 +5,33 @@
         "title": "Regístrate con tu cuenta Fermax Blue",
         "data": {
           "username": "Nombre de usuario",
-          "password": "Contraseña",
-          "client_id": "Fermax API Client ID",
-          "client_secret": "Fermax API Client Secret",
-          "api_key": "Google API Key",
-          "senderId": "FCM Sender ID",
-          "appId": "FCM App ID",
-          "projectId": " FCM Project ID",
-          "packageName": "FCM Package Name"
+          "password": "Contraseña"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Vuelve a autenticarte con Fermax Blue",
+        "description": "Tu sesión ha expirado o faltan credenciales. Por favor, vuelve a iniciar sesión.",
+        "data": {
+          "username": "Nombre de usuario",
+          "password": "Contraseña"
         }
       },
       "reconfigure": {
-        "title": "Regístrate con tu cuenta Fermax Blue",
+        "title": "Actualizar credenciales de Fermax Blue",
         "data": {
           "username": "Nombre de usuario",
-          "password": "Contraseña",
-          "client_id": "Fermax API Client ID",
-          "client_secret": "Fermax API Client Secret",
-          "api_key": "Google API Key",
-          "senderId": "FCM Sender ID",
-          "appId": "FCM App ID",
-          "projectId": " FCM Project ID",
-          "packageName": "FCM Package Name"
+          "password": "Contraseña"
         }
       }
     },
     "error": {
-      "invalid_auth": "Autenticación no válida"
+      "invalid_auth": "Autenticación no válida",
+      "cannot_connect": "No se pudo conectar con la API de Fermax",
+      "unknown": "Error inesperado"
     },
     "abort": {
       "already_configured": "La cuenta ya está configurada",
+      "reauth_successful": "Reautenticación exitosa",
       "reconfigure_successful": "Integración reconfigurada"
     }
   },
@@ -53,17 +50,17 @@
     }
   },
   "entity": {
-      "sensor": {
-          "wifi-state": {
-              "state": {
-                  "terrible": "Horrible",
-                  "bad": "Mala",
-                  "weak": "Débil",
-                  "good": "Buena",
-                  "excelent": "Excelente",
-                  "unknown": "Desconocida"
-              }
-          }
+    "sensor": {
+      "wifi-state": {
+        "state": {
+          "terrible": "Horrible",
+          "bad": "Mala",
+          "weak": "Débil",
+          "good": "Buena",
+          "excelent": "Excelente",
+          "unknown": "Desconocida"
+        }
       }
+    }
   }
 }

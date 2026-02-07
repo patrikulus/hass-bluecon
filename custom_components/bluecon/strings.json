@@ -2,39 +2,36 @@
   "config": {
     "step": {
       "user": {
-        "title": "Sign-in with Fermax Blue account",
+        "title": "Sign in with Fermax Blue account",
         "data": {
           "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]",
-          "client_id": "Fermax API Client ID",
-          "client_secret": "Fermax API Client Secret",
-          "api_key": "Google API Key",
-          "senderId": "FCM Sender ID",
-          "appId": "FCM App ID",
-          "projectId": " FCM Project ID",
-          "packageName": "FCM Package Name"
+          "password": "[%key:common::config_flow::data::password%]"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate with Fermax Blue",
+        "description": "Your session has expired or credentials are missing. Please sign in again.",
+        "data": {
+          "username": "[%key:common::config_flow::data::username%]",
+          "password": "[%key:common::config_flow::data::password%]"
         }
       },
       "reconfigure": {
-        "title": "Sign-in with Fermax Blue account",
+        "title": "Update Fermax Blue credentials",
         "data": {
           "username": "[%key:common::config_flow::data::username%]",
-          "password": "[%key:common::config_flow::data::password%]",
-          "client_id": "Fermax API Client ID",
-          "client_secret": "Fermax API Client Secret",
-          "api_key": "Google API Key",
-          "senderId": "FCM Sender ID",
-          "appId": "FCM App ID",
-          "projectId": " FCM Project ID",
-          "packageName": "FCM Package Name"
+          "password": "[%key:common::config_flow::data::password%]"
         }
       }
     },
     "error": {
-      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]"
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
     },
     "abort": {
       "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]",
       "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
     }
   },
@@ -53,17 +50,17 @@
     }
   },
   "entity": {
-      "sensor": {
-          "wifi-state": {
-              "state": {
-                  "terrible": "Terrible",
-                  "bad": "Bad",
-                  "weak": "Weak",
-                  "good": "Good",
-                  "excelent": "Excelent",
-                  "unknown": "Unknown"
-              }
-          }
+    "sensor": {
+      "wifi-state": {
+        "state": {
+          "terrible": "Terrible",
+          "bad": "Bad",
+          "weak": "Weak",
+          "good": "Good",
+          "excelent": "Excelent",
+          "unknown": "Unknown"
+        }
       }
+    }
   }
 }

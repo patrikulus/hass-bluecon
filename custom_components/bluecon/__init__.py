@@ -1,116 +1,110 @@
-import json
-from .const import CONF_LOCK_STATE_RESET, DOMAIN, SIGNAL_CALL_ENDED, SIGNAL_CALL_STARTED
-from .ConfigFolderOAuthTokenStorage import ConfigFolderOAuthTokenStorage
-from .ConfigFolderNotificationInfoStorage import ConfigFolderNotificationInfoStorage
-from .config_flow import BlueConConfigFlow
-from homeassistant.const import (
-    CONF_API_KEY,
-    CONF_CLIENT_ID,
-    CONF_CLIENT_SECRET,
-    EVENT_HOMEASSISTANT_STOP,
-    Platform
-)
-from homeassistant.helpers.dispatcher import dispatcher_send
-from bluecon import BlueConAPI, INotification, CallNotification, CallEndNotification, IOAuthTokenStorage, INotificationInfoStorage, OAuthToken
-from homeassistant.core import HomeAssistant, callback
+"""Fermax Blue (BlueCon) integration for Home Assistant."""
+
+from __future__ import annotations
+
+import logging
+
 from homeassistant.config_entries import ConfigEntry
-from custom_components.bluecon.const import CONF_PACKAGE_NAME, CONF_APP_ID, CONF_PROJECT_ID, CONF_SENDER_ID
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.storage import Store
 
+from .const import CONF_LOCK_STATE_RESET, DOMAIN
+from .fermax_api import (
+    FermaxAuthError,
+    FermaxClient,
+    FermaxConnectionError,
+)
 
+_LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[str] = [Platform.BINARY_SENSOR, Platform.LOCK, Platform.CAMERA, Platform.SENSOR]
+PLATFORMS: list[Platform] = [
+    Platform.LOCK,
+    Platform.BINARY_SENSOR,
+    Platform.SENSOR,
+    Platform.BUTTON,
+]
+
+TOKEN_STORE_VERSION = 1
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    def notification_callback(notification: INotification):
-        if type(notification) is CallNotification:
-            dispatcher_send(hass, SIGNAL_CALL_STARTED.format(notification.deviceId, notification.accessDoorKey))
-        elif type(notification) is CallEndNotification:
-            dispatcher_send(hass, SIGNAL_CALL_ENDED.format(notification.deviceId))
+    """Set up Fermax Blue from a config entry."""
+    hass.data.setdefault(DOMAIN, {})
 
-    hass.data[DOMAIN] = {
-        "bluecon": None
-    }
+    username: str | None = entry.data.get(CONF_USERNAME)
+    password: str | None = entry.data.get(CONF_PASSWORD)
 
-    bluecon = await BlueConAPI.create_already_authed(
-        entry.data[CONF_CLIENT_ID],
-        entry.data[CONF_CLIENT_SECRET],
-        entry.data.get(CONF_SENDER_ID, None),
-        entry.data.get(CONF_API_KEY, None),
-        entry.data.get(CONF_PROJECT_ID, None),
-        entry.data.get(CONF_APP_ID, None),
-        entry.data.get(CONF_PACKAGE_NAME, None),
-        notification_callback, 
-        ConfigFolderOAuthTokenStorage(hass), 
-        ConfigFolderNotificationInfoStorage(hass)
-    )
+    if not username or not password:
+        raise ConfigEntryAuthFailed(
+            "Credentials missing – please reconfigure the integration"
+        )
 
-    if entry.data.get(CONF_SENDER_ID, None) is not None and entry.data.get(CONF_API_KEY, None) is not None and entry.data.get(CONF_PROJECT_ID, None) is not None and entry.data.get(CONF_APP_ID, None) is not None and entry.data.get(CONF_PACKAGE_NAME, None) is not None:
-        bluecon.startNotificationListener()
+    session = async_get_clientsession(hass)
+    store = Store(hass, TOKEN_STORE_VERSION, f"{DOMAIN}.token.{entry.entry_id}")
 
-        @callback
-        async def cleanup(event):
-            await bluecon.stopNotificationListener()
-        
-        hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, cleanup)
+    async def _save_token(data: dict) -> None:
+        await store.async_save(data)
 
-    hass.data[DOMAIN][entry.entry_id] = bluecon
+    client = FermaxClient(username, password, session, on_token_update=_save_token)
+
+    # Restore cached token (if any)
+    cached = await store.async_load()
+    client.set_token_data(cached)
+
+    # Authenticate (will use cache / refresh / full re-auth as needed)
+    try:
+        await client.async_login()
+    except FermaxAuthError as err:
+        raise ConfigEntryAuthFailed(str(err)) from err
+    except FermaxConnectionError as err:
+        raise ConfigEntryNotReady(str(err)) from err
+
+    hass.data[DOMAIN][entry.entry_id] = client
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    entry.async_on_unload(entry.add_update_listener(update_listener))
+    entry.async_on_unload(entry.add_update_listener(_update_listener))
 
     return True
 
-async def update_listener(hass: HomeAssistant, entry: ConfigEntry):
+
+async def _update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload integration when options change."""
     await hass.config_entries.async_reload(entry.entry_id)
 
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
-        hass.data[DOMAIN].pop(entry.entry_id)
-    
+        hass.data[DOMAIN].pop(entry.entry_id, None)
     return unload_ok
 
-async def async_migrate_entry(hass: HomeAssistant, config_entry: ConfigEntry):
-    tempNotificationInfoStorage: INotificationInfoStorage = ConfigFolderNotificationInfoStorage(hass)
-    tempOAuthTokenStorage: IOAuthTokenStorage = ConfigFolderOAuthTokenStorage(hass)
 
-    if config_entry.version == 1:
-        try:
-            with open("credentials.json", "r") as f:
-                credentials = json.load(f)
-        except FileNotFoundError:
-            credentials = None
-        
-        try:
-            with open("persistent_ids.txt", "r") as f:
-                persistentIds = [x.strip() for x in f]
-        except FileNotFoundError:
-            persistentIds = None
-        
-        tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.data["token"]))
-        tempNotificationInfoStorage.storeCredentials(credentials)
-        for persistentId in persistentIds:
-            tempNotificationInfoStorage.storePersistentId(persistentId)
-        
-    if config_entry.version == 2:
-        
-        tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.data["token"]))
-        tempNotificationInfoStorage.storeCredentials(config_entry.data["credentials"])
-        for persistentId in config_entry.data["persistentIds"]:
-            tempNotificationInfoStorage.storePersistentId(persistentId)
+async def async_migrate_entry(
+    hass: HomeAssistant, config_entry: ConfigEntry
+) -> bool:
+    """Migrate older config entry versions to current."""
+    _LOGGER.debug(
+        "Migrating config entry from version %s", config_entry.version
+    )
 
-    if config_entry.version == 3:
-        tempOAuthTokenStorage.storeOAuthToken(OAuthToken.fromJson(config_entry.options["token"]))
-        tempNotificationInfoStorage.storeCredentials(config_entry.options["credentials"])
-        for persistentId in config_entry.options["persistentIds"]:
-            tempNotificationInfoStorage.storePersistentId(persistentId)
+    if config_entry.version < 7:
+        # Versions ≤6 used the old bluecon library with different stored
+        # data.  We cannot recover username/password from the old format,
+        # so we clear data and let the reauth flow collect fresh
+        # credentials.  Options (lock timeout) are preserved.
+        hass.config_entries.async_update_entry(
+            config_entry,
+            data={},
+            options=config_entry.options or {CONF_LOCK_STATE_RESET: 5},
+            version=7,
+        )
+        _LOGGER.info(
+            "Migrated config entry to v7 – re-authentication required"
+        )
 
-    if config_entry.version < 6:
-        config_entry.version = BlueConConfigFlow.VERSION
-        hass.config_entries.async_update_entry(config_entry, data = {
-                        CONF_CLIENT_ID: "",
-                        CONF_CLIENT_SECRET: ""
-                    }, options = { CONF_LOCK_STATE_RESET: 5 })
-    
     return True

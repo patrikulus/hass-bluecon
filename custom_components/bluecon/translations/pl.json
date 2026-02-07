@@ -5,36 +5,33 @@
         "title": "Zaloguj się za pomocą konta Fermax Blue",
         "data": {
           "username": "Nazwa użytkownika",
-          "password": "Hasło",
-          "client_id": "Identyfikator klienta Fermax API",
-          "client_secret": "Tajny klucz klienta Fermax API",
-          "api_key": "Klucz interfejsu API Google",
-          "senderId": "FCM Sender ID (Identyfikator nadawcy FCM)",
-          "appId": "FCM App ID (Identyfikator aplikacji FCM)",
-          "projectId": "Identyfikator projektu FCM",
-          "packageName": "Nazwa pakietu FCM"
+          "password": "Hasło"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Ponowne uwierzytelnienie z Fermax Blue",
+        "description": "Twoja sesja wygasła lub brakuje poświadczeń. Zaloguj się ponownie.",
+        "data": {
+          "username": "Nazwa użytkownika",
+          "password": "Hasło"
         }
       },
       "reconfigure": {
-        "title": "Zaloguj się za pomocą konta Fermax Blue",
+        "title": "Zaktualizuj poświadczenia Fermax Blue",
         "data": {
           "username": "Nazwa użytkownika",
-          "password": "Hasło",
-          "client_id": "Identyfikator klienta Fermax API",
-          "client_secret": "Tajny klucz klienta Fermax API",
-          "api_key": "Klucz interfejsu API Google",
-          "senderId": "FCM Sender ID (Identyfikator nadawcy FCM)",
-          "appId": "FCM App ID (Identyfikator aplikacji FCM)",
-          "projectId": "Identyfikator projektu FCM",
-          "packageName": "Nazwa pakietu FCM"
+          "password": "Hasło"
         }
       }
     },
     "error": {
-      "invalid_auth": "Nieprawidłowe uwierzytelnianie"
+      "invalid_auth": "Nieprawidłowe uwierzytelnianie",
+      "cannot_connect": "Nie można połączyć się z API Fermax",
+      "unknown": "Nieoczekiwany błąd"
     },
     "abort": {
       "already_configured": "Konto jest już skonfigurowane",
+      "reauth_successful": "Ponowne uwierzytelnienie powiodło się",
       "reconfigure_successful": "Przekonfigurowana integracja"
     }
   },
@@ -53,17 +50,17 @@
     }
   },
   "entity": {
-      "sensor": {
-          "wifi-state": {
-              "state": {
-                  "terrible": "Straszna",
-                  "bad": "Zła",
-                  "weak": "Słaba",
-                  "good": "Dobra",
-                  "excelent": "Doskonała",
-                  "unknown": "Nieznana"
-              }
-          }
+    "sensor": {
+      "wifi-state": {
+        "state": {
+          "terrible": "Straszna",
+          "bad": "Zła",
+          "weak": "Słaba",
+          "good": "Dobra",
+          "excelent": "Doskonała",
+          "unknown": "Nieznana"
+        }
       }
+    }
   }
 }
