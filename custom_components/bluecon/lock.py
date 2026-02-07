@@ -2,7 +2,6 @@ import asyncio
 from typing import Any, Dict
 from homeassistant.components.lock import LockEntity
 from homeassistant.const import (
-    STATE_JAMMED,
     STATE_LOCKED,
     STATE_LOCKING,
     STATE_UNLOCKED,
@@ -81,7 +80,7 @@ class BlueConLock(LockEntity):
     @property
     def is_jammed(self) -> bool:
         """Return true if lock is jammed."""
-        return self._state == STATE_JAMMED
+        return False
 
     @property
     def is_locked(self) -> bool:
