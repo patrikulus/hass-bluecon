@@ -1,63 +1,64 @@
-> [!WARNING]
-> At the request of Fermax, significant changes to the underlying library used by HASS-BlueCon have caused the integration to be currently broken.
-> Please follow for more updates on this discussion -> https://github.com/AfonsoFGarcia/hass-bluecon/discussions/6
-
-
 # HASS-BlueCon
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
-<a href="#" style="text-align: center;">
- <img src="https://github.com/user-attachments/assets/522190c4-3b73-49cd-98ba-a6153c7800b4" width="15%" height="15%" alt="Fermax Blue" text-align="center" margin="0 0 0 0">
-</a>
-
-<br> This project is in a lower than alpha state. Unfortunately I do not have the time to progress on it as much as I would like. 
+<div align="center">
+  <img src="images/logo.svg" width="400" alt="Fermax Blue Integration Logo">
+</div>
 
 ## 📑 Description
 
-HASS-BlueCon to connect with the API (Show user information, Show intercom information, Intercom history, open the door)
+Custom Home Assistant integration for **Fermax Blue** intercoms.
+Allows you to open your door directly from Home Assistant using the official Fermax API.
 
-## 📑 Usage
+> **Note**: This integration replaces the previous library implementation with a direct API client based on reverse-engineered protocol details.
 
-Under construction
+## ✨ Features
 
-## Add HASS-BlueCon to Home Assistant
+- **Open Door**: Unlock your building door via Home Assistant.
+- **Multiple Doors**: Supports devices with multiple access points.
+- **Token Management**: Handles authentication and automatic token refreshing.
+- **Config Flow**: Easy setup via Home Assistant UI.
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
+## 🚀 Installation
 
-[![Install repository](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=AfonsoFGarcia&repository=hass-bluecon&category=integration)
+### Option 1: HACS (Recommended)
+1. Open HACS in Home Assistant.
+2. Go to "Integrations" > "Explore & Download Repositories".
+3. Search for "Fermax Blue" or add this repository URL as a custom repository.
+4. Click "Download".
+5. Restart Home Assistant.
 
-[![Add Integration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start?domain=hass-bluecon)
+### Option 2: Manual
+1. Copy the `custom_components/bluecon` folder to your HA `config/custom_components/` directory.
+2. Restart Home Assistant.
 
-## ⚠️ Disclaimer
+## ⚙️ Configuration
 
-There are currently errors with the camera device
-
-This script was tested on a Fermax VEO-XS WIFI 4,3" DUOX PLUS (REF: 9449)
+1. Go to **Settings** > **Devices & Services**.
+2. Click **Add Integration**.
+3. Search for **Fermax Blue**.
+4. Enter your Fermax Blue **Username** and **Password**.
 
 ## 📚 Documentation
 
-- App Usage and Configuration: [All Documentation](docs/index.md)
+- [Manual Testing Guide](docs/MANUAL_TESTS.md)
+- [Porting Notes](docs/porting_notes.md)
 
-## 📑 Minimum System Requirements
+## ⚠️ Disclaimer
 
-- [Home Assistant 2024.3.0](https://www.home-assistant.io/installation/)
-- [Python3.11](https://www.python.org/downloads/)
+This integration is not affiliated with Fermax. Use at your own risk.
+Tested on Fermax VEO-XS WIFI 4,3" DUOX PLUS (REF: 9449).
 
-## 📑 Recommended System Requirements
+## ☕ Support
 
-- [Home Assistant 2024.9.1](https://www.home-assistant.io/installation/)
-- [Python3.12](https://www.python.org/downloads/)
-  
-## ☕ Support me
-
-Support me to improve HASS-BlueCon
-
-If you are willing to contribute to it, please feel free to open PRs and I'll try to review them.
+If you find this useful, please consider starring the repository.
 
 ## ⌨️ Contributions
 
-- [cvc90](https://github.com/cvc90) - Spanish translations and other improvements
+- [AfonsoFGarcia](https://github.com/AfonsoFGarcia) - Original Author
+- [patrikulus](https://github.com/patrikulus)
+- [cvc90](https://github.com/cvc90) - Spanish translations
 
 ## 📑 License
-  MIT License | [Read more here](LICENSE) | Source of the [animated GIF (Loading Animation)](https://commons.wikimedia.org/wiki/File:Loading_Animation.gif) | Source of the [selfhosted Fonts](https://github.com/adobe-fonts/source-sans)
+MIT License | [Read more here](LICENSE)

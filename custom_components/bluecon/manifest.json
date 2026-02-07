@@ -1,11 +1,11 @@
 {
     "domain": "bluecon",
     "name": "Fermax Blue",
-    "version": "0.7.4",
+    "version": "0.7.5",
     "documentation": "https://hass-bluecon.afonsogarcia.dev/",
     "issue_tracker": "https://github.com/AfonsoFGarcia/hass-bluecon/issues",
     "requirements": [],
-    "codeowners": ["@AfonsoFGarcia"],
+    "codeowners": ["@AfonsoFGarcia", "@patrikulus"],
     "config_flow": true,
     "integration_type": "hub",
     "iot_class": "cloud_polling"

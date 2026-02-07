@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0055A4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#003366;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon Part -->
+  <g transform="translate(50, 25)">
+      <rect width="350" height="350" rx="70" fill="url(#grad1)" />
+      <!-- Door Frame -->
+      <rect x="106" y="82" width="138" height="205" rx="7" fill="none" stroke="white" stroke-width="14" />
+      <!-- Door -->
+      <rect x="120" y="96" width="110" height="191" rx="3" fill="rgba(255,255,255,0.2)" />
+      <!-- Handle -->
+      <circle cx="205" cy="191" r="8" fill="white" />
+      <!-- Signal Waves -->
+      <path d="M 175 55 Q 240 55 280 96" fill="none" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.8" />
+      <path d="M 175 34 Q 260 34 315 89" fill="none" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.6" />
+      <!-- Intercom Dots -->
+      <circle cx="144" cy="123" r="5" fill="white" opacity="0.9" />
+      <circle cx="144" cy="144" r="5" fill="white" opacity="0.9" />
+      <circle cx="144" cy="164" r="5" fill="white" opacity="0.9" />
+  </g>
+  
+  <!-- Text Part -->
+  <text x="450" y="240" font-family="Arial, sans-serif" font-weight="bold" font-size="180" fill="#0055A4">BlueCon</text>
+  <text x="455" y="320" font-family="Arial, sans-serif" font-size="60" fill="#555" letter-spacing="2">FERMAX INTEGRATION</text>
+</svg>
