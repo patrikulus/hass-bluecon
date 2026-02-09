@@ -57,8 +57,10 @@ If you find this useful, please consider starring the repository.
 ## ⌨️ Contributions
 
 - [AfonsoFGarcia](https://github.com/AfonsoFGarcia) - Original Author
-- [patrikulus](https://github.com/patrikulus)
+- [patrikulus](https://github.com/patrikulus) - Author of this fork
 - [cvc90](https://github.com/cvc90) - Spanish translations
+- [marcosav](https://github.com/marcosav) - Author of the [script](https://github.com/marcosav/fermax-blue-intercom) which was used for this fork
+- [viseniv](https://github.com/viseniv) - Without him I probably wouldn't find the script above :)
 
 ## 📑 License
 MIT License | [Read more here](LICENSE)
